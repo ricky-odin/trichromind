@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trichromind — Neurotransmitter Assessment</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f5f5f2;
+  --bg3: #eeede9;
+  --text: #1a1a18;
+  --text2: #6b6b67;
+  --text3: #a0a09c;
+  --border: rgba(0,0,0,0.12);
+  --border2: rgba(0,0,0,0.22);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --ne: #185FA5;
+  --ne-bg: #E6F1FB;
+  --ne-text: #0C447C;
+  --da: #3B6D11;
+  --da-bg: #EAF3DE;
+  --da-text: #27500A;
+  --se: #993556;
+  --se-bg: #FBEAF0;
+  --se-text: #72243E;
+  --amber-bg: #FAEEDA;
+  --amber-text: #633806;
+  --amber-icon: #854F0B;
+  --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Mono', 'Consolas', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1a;
+    --bg2: #252523;
+    --bg3: #2e2e2b;
+    --text: #f0efeb;
+    --text2: #9e9e98;
+    --text3: #6b6b65;
+    --border: rgba(255,255,255,0.10);
+    --border2: rgba(255,255,255,0.20);
+    --ne-bg: #0c2e52;
+    --ne-text: #85B7EB;
+    --da-bg: #1a3308;
+    --da-text: #97C459;
+    --se-bg: #3d1526;
+    --se-text: #ED93B1;
+    --amber-bg: #3a2408;
+    --amber-text: #FAC775;
+    --amber-icon: #EF9F27;
+  }
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg3);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+#app {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--border);
+  padding: 2rem;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* BRAND */
+.brand { display: flex; align-items: baseline; gap: 10px; margin-bottom: 1.5rem; }
+.brand-title { font-size: 22px; font-weight: 500; }
+.brand-sub { font-size: 14px; color: var(--text2); }
+
+/* INTRO */
+.intro-card { background: var(--bg2); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.intro-card p { font-size: 15px; color: var(--text2); line-height: 1.6; }
+
+.pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
+.pill { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+.pill-ne { background: var(--ne-bg); color: var(--ne-text); }
+.pill-da { background: var(--da-bg); color: var(--da-text); }
+.pill-se { background: var(--se-bg); color: var(--se-text); }
+.pill-wb { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border); }
+
+.details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-group label { font-size: 12px; color: var(--text2); }
+.field-group input {
+  font-size: 14px; font-family: var(--font);
+  padding: 8px 10px; border-radius: var(--radius);
+  border: 0.5px solid var(--border2); background: var(--bg);
+  color: var(--text); outline: none;
+}
+.field-group input:focus { border-color: var(--text); }
+
+.start-btn {
+  width: 100%; padding: 12px; font-size: 16px; font-weight: 500;
+  cursor: pointer; border-radius: var(--radius); background: var(--text);
+  color: var(--bg); border: none; font-family: var(--font);
+}
+.start-btn:hover { opacity: 0.85; }
+
+/* PROGRESS */
+.progress-wrap { margin-bottom: 1.5rem; }
+.progress-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.progress-bar { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width 0.3s ease; }
+.page-header { font-size: 12px; color: var(--text2); margin-bottom: 1rem; }
+
+/* QUESTIONS */
+.q-list { display: flex; flex-direction: column; gap: 2px; }
+.q-row {
+  background: var(--bg); border: 0.5px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  display: flex; gap: 12px; align-items: center;
+  transition: background 0.12s;
+}
+.q-row:hover { background: var(--bg2); }
+.q-num { font-size: 12px; color: var(--text3); min-width: 22px; flex-shrink: 0; }
+.q-text { flex: 1; font-size: 14px; color: var(--text); line-height: 1.45; }
+.q-cat {
+  font-size: 11px; padding: 2px 7px; border-radius: 10px;
+  white-space: nowrap; align-self: flex-start; margin-top: 2px; flex-shrink: 0;
+}
+.q-cat-NE { background: var(--ne-bg); color: var(--ne-text); }
+.q-cat-DA { background: var(--da-bg); color: var(--da-text); }
+.q-cat-SE { background: var(--se-bg); color: var(--se-text); }
+.q-cat-OV { background: var(--bg2); color: var(--text2); }
+.q-cat-WB { background: var(--amber-bg); color: var(--amber-text); }
+
+.likert { display: flex; gap: 3px; flex-shrink: 0; }
+.likert label { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+.likert input[type=radio] { display: none; }
+.likert-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 0.5px solid var(--border2); display: flex; align-items: center;
+  justify-content: center; font-size: 12px; font-weight: 500;
+  color: var(--text2); transition: all 0.12s;
+}
+.likert input:checked + .likert-dot { background: var(--text); color: var(--bg); border-color: var(--text); }
+.likert label:hover .likert-dot { background: var(--bg2); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; gap: 12px; }
+.nav-btn {
+  padding: 10px 24px; font-size: 14px; font-weight: 500;
+  cursor: pointer; border-radius: var(--radius);
+  border: 0.5px solid var(--border2); background: var(--bg);
+  color: var(--text); font-family: var(--font);
+}
+.nav-btn:hover { background: var(--bg2); }
+.nav-btn.primary { background: var(--text); color: var(--bg); border: none; }
+.nav-btn.primary:hover { opacity: 0.85; }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.warn { font-size: 13px; color: #c0392b; flex: 1; text-align: center; }
+
+/* RESULTS */
+.res-header { margin-bottom: 1.5rem; }
+.res-header h2 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+.res-meta { font-size: 13px; color: var(--text2); }
+
+.nt-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.nt-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; }
+.nt-card-label { font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+.nt-card-pct { font-size: 28px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
+.nt-bar-bg { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+.nt-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.nt-interp { font-size: 12px; color: var(--text2); margin-top: 8px; line-height: 1.4; }
+.nt-ne .nt-card-label { color: var(--ne); }
+.nt-ne .nt-bar-fill { background: var(--ne); }
+.nt-da .nt-card-label { color: var(--da); }
+.nt-da .nt-bar-fill { background: var(--da); }
+.nt-se .nt-card-label { color: var(--se); }
+.nt-se .nt-bar-fill { background: var(--se); }
+
+.colour-swatch {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;
+  padding: 14px 16px; background: var(--bg2); border-radius: var(--radius);
+}
+.swatch-box { width: 40px; height: 40px; border-radius: var(--radius); flex-shrink: 0; border: 0.5px solid var(--border); }
+.swatch-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.swatch-hex { font-size: 11px; font-family: var(--font-mono); color: var(--text3); }
+.swatch-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.advice-section { margin-bottom: 1.5rem; }
+.advice-section h3 { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+.advice-item {
+  display: flex; gap: 10px; padding: 10px 14px;
+  border-radius: var(--radius); background: var(--amber-bg); margin-bottom: 6px;
+}
+.advice-item i { color: var(--amber-icon); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.advice-item p { font-size: 13px; color: var(--amber-text); line-height: 1.5; }
+
+.disclaimer {
+  font-size: 12px; color: var(--text3); padding: 10px 14px;
+  border: 0.5px solid var(--border); border-radius: var(--radius);
+  line-height: 1.5; margin-bottom: 1.5rem;
+}
+
+.restart-btn {
+  padding: 10px 24px; font-size: 14px; cursor: pointer;
+  border-radius: var(--radius); border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--text); font-family: var(--font);
+}
+.restart-btn:hover { background: var(--bg2); }
+
+@media (max-width: 520px) {
+  body { padding: 0; }
+  #app { border-radius: 0; border-left: none; border-right: none; padding: 1.25rem 1rem; min-height: 100vh; }
+  .details-grid { grid-template-columns: 1fr; }
+  .details-grid .field-group:first-child { grid-column: auto; }
+  .nt-cards { grid-template-columns: 1fr; }
+  .likert-dot { width: 24px; height: 24px; font-size: 11px; }
+  .q-cat { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SCREEN 1: WELCOME -->
+  <div id="screen-welcome" class="screen active">
+    <div class="brand">
+      <span class="brand-title">Trichromind</span>
+      <span class="brand-sub">Neurotransmitter assessment</span>
+    </div>
+    <div class="intro-card">
+      <p>This questionnaire estimates relative patterns in three neurotransmitter domains based on your self-reported answers. It is informational only — not a diagnosis or medical advice.</p>
+    </div>
+    <div class="pills">
+      <span class="pill pill-ne">Norepinephrine</span>
+      <span class="pill pill-da">Dopamine</span>
+      <span class="pill pill-se">Serotonin</span>
+      <span class="pill pill-wb">Wellbeing</span>
+      <span class="pill pill-wb">90 questions</span>
+      <span class="pill pill-wb">Scale 1–5</span>
+    </div>
+    <div class="details-grid">
+      <div class="field-group" style="grid-column: 1 / 3;">
+        <label>Full name (optional)</label>
+        <input type="text" id="inp-name" placeholder="First and last name" />
+      </div>
+      <div class="field-group">
+        <label>Date of birth (optional)</label>
+        <input type="date" id="inp-dob" />
+      </div>
+      <div class="field-group">
+        <label>Date of assessment</label>
+        <input type="date" id="inp-date" />
+      </div>
+      <div class="field-group">
+        <label>GP surgery (optional)</label>
+        <input type="text" id="inp-gp" placeholder="GP practice name" />
+      </div>
+      <div class="field-group">
+        <label>NHS Patient ID (optional)</label>
+        <input type="text" id="inp-nhs" placeholder="NHS number" />
+      </div>
+    </div>
+    <button class="start-btn" onclick="startAssessment()">Begin assessment →</button>
+  </div>
+
+  <!-- SCREEN 2: FORM -->
+  <div id="screen-form" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="progress-label">Questions 1–15 of 90</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="page-header">Rate each statement: 1 = Never &nbsp;·&nbsp; 2 = Rarely &nbsp;·&nbsp; 3 = Sometimes &nbsp;·&nbsp; 4 = Often &nbsp;·&nbsp; 5 = Always</div>
+    <div class="q-list" id="q-list"></div>
+    <div class="nav-row">
+      <button class="nav-btn" id="btn-prev" onclick="changePage(-1)" disabled>← Back</button>
+      <span class="warn" id="warn-msg"></span>
+      <button class="nav-btn primary" id="btn-next" onclick="changePage(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: RESULTS -->
+  <div id="screen-results" class="screen">
+    <div class="res-header">
+      <h2>Your results</h2>
+      <p class="res-meta" id="res-meta"></p>
+    </div>
+    <div class="nt-cards">
+      <div class="nt-card nt-ne">
+        <div class="nt-card-label">Norepinephrine</div>
+        <div class="nt-card-pct" id="ne-pct">–</div>
+        <div class="nt-bar-bg"><div class="nt-bar-fill" id="ne-bar" style="width:0%"></div></div>
+        <div class="nt-interp" id="ne-interp"></div>
+      </div>
+      <div class="nt-card nt-da">
+        <div class="nt-card-label">Dopamine</div>
+        <div class="nt-card-pct" id="da-pct">–</div>
+        <div class="nt-bar-bg"><div class="nt-bar-fill" id="da-bar" style="width:0%"></div></div>
+        <div class="nt-interp" id="da-interp"></div>
+      </div>
+      <div class="nt-card nt-se">
+        <div class="nt-card-label">Serotonin</div>
+        <div class="nt-card-pct" id="se-pct">–</div>
+        <div class="nt-bar-bg"><div class="nt-bar-fill" id="se-bar" style="width:0%"></div></div>
+        <div class="nt-interp" id="se-interp"></div>
+      </div>
+    </div>
+    <div class="colour-swatch">
+      <div class="swatch-box" id="swatch-box"></div>
+      <div>
+        <div class="swatch-label">Your Trichromind colour</div>
+        <div class="swatch-hex" id="swatch-hex"></div>
+        <div class="swatch-sub">RGB blend of your three domain scores</div>
+      </div>
+    </div>
+    <div class="advice-section" id="advice-section">
+      <h3>Wellbeing pointers</h3>
+      <div id="advice-list"></div>
+    </div>
+    <div class="disclaimer">This is an informational tool — not a diagnosis. If concerned, please consult a qualified clinician or your GP.</div>
+    <button class="restart-btn" onclick="restart()">← Start over</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {id:1,cat:"SE",q:"I feel calm and steady most of the time.",rev:false,ne:0,da:0,se:1,wb:false},
+  {id:2,cat:"DA",q:"I lose interest in hobbies or activities that used to excite me.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:3,cat:"SE",q:"I feel emotionally drained after social situations.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:4,cat:"OV",q:"I often feel drained after situations that require focus and emotional control.",rev:true,ne:1/3,da:1/3,se:1/3,wb:false},
+  {id:5,cat:"NE",q:"I often feel tense or \"on edge\" even when nothing is wrong.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:6,cat:"DA",q:"I have less energy to be creative or try new things.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:7,cat:"DA",q:"I usually take pleasure in my daily activities.",rev:false,ne:0,da:1,se:0,wb:false},
+  {id:8,cat:"OV",q:"I can usually enjoy social events even when I'm stressed.",rev:false,ne:0.5,da:0,se:0.5,wb:false},
+  {id:9,cat:"NE",q:"I notice physical tension in my shoulders, neck, or jaw most days.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:10,cat:"SE",q:"I wake up feeling optimistic about the day ahead.",rev:false,ne:0,da:0,se:1,wb:false},
+  {id:11,cat:"WB",q:"I am satisfied with the overall direction of my life.",rev:false,ne:0,da:0,se:0,wb:true,wbAdv:"Low life satisfaction: consider journaling goals, and NHS Talking Therapies for guided support.",wbRev:false},
+  {id:12,cat:"DA",q:"I feel a lack of curiosity about the world around me.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:13,cat:"SE",q:"I have difficulty finding things to look forward to.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:14,cat:"WB",q:"I usually look forward to the week ahead.",rev:false,ne:0,da:0,se:0,wb:true,wbAdv:"Dreading the week ahead: plan one small positive activity daily; consider CBT-based planning tools.",wbRev:false},
+  {id:15,cat:"NE",q:"I feel more irritable than I would like to be.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:16,cat:"NE",q:"I feel jumpy or easily startled.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:17,cat:"NE",q:"I can usually wind down quickly after something stressful happens.",rev:false,ne:1,da:0,se:0,wb:false},
+  {id:18,cat:"DA",q:"I am good at finishing tasks I start.",rev:false,ne:0,da:1,se:0,wb:false},
+  {id:19,cat:"SE",q:"I feel irritable more often than I'd like.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:20,cat:"OV",q:"I often feel restless and unmotivated at the same time.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:21,cat:"OV",q:"I can usually be creative even when I'm under pressure.",rev:false,ne:0.5,da:0.5,se:0,wb:false},
+  {id:22,cat:"OV",q:"My motivation drops when I'm feeling tense.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:23,cat:"OV",q:"I can usually start my day feeling calm and motivated.",rev:false,ne:1/3,da:1/3,se:1/3,wb:false},
+  {id:24,cat:"DA",q:"I often put off doing things, even if I know they'll make me feel better.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:25,cat:"DA",q:"I feel less satisfaction than I used to when I achieve something.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:26,cat:"NE",q:"I find it difficult to \"switch off\" before bed because my mind is active.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:27,cat:"OV",q:"I feel like I'm running on low energy and low mood.",rev:true,ne:0,da:0.5,se:0.5,wb:false},
+  {id:28,cat:"OV",q:"I can't concentrate well when I'm feeling low.",rev:true,ne:0,da:0.5,se:0.5,wb:false},
+  {id:29,cat:"DA",q:"I feel like I'm just going through the motions most days.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:30,cat:"OV",q:"I avoid new opportunities if I think they might be stressful.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:31,cat:"NE",q:"I feel restless and find it hard to sit still.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:32,cat:"OV",q:"I find it difficult to relax if I have unfinished tasks.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:33,cat:"NE",q:"I can stay calm when dealing with everyday challenges.",rev:false,ne:1,da:0,se:0,wb:false},
+  {id:34,cat:"SE",q:"I find it hard to stay positive during difficult times.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:35,cat:"SE",q:"I often feel empty or emotionally flat.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:36,cat:"NE",q:"I am usually able to stay calm during stressful situations.",rev:false,ne:1,da:0,se:0,wb:false},
+  {id:37,cat:"SE",q:"I feel easily discouraged when things go wrong.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:38,cat:"DA",q:"I am usually motivated to complete tasks once I begin.",rev:false,ne:0,da:1,se:0,wb:false},
+  {id:39,cat:"NE",q:"I feel drained after situations where I have to stay alert for long periods.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:40,cat:"OV",q:"I can stay in a good mood even when I'm physically tired.",rev:false,ne:0,da:0.5,se:0.5,wb:false},
+  {id:41,cat:"DA",q:"I feel unmotivated to get out of bed some mornings.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:42,cat:"NE",q:"I am good at focusing even when things are busy around me.",rev:false,ne:1,da:0,se:0,wb:false},
+  {id:43,cat:"WB",q:"I often feel like my life lacks purpose.",rev:true,ne:0,da:0,se:0,wb:true,wbAdv:"Loss of purpose: explore coaching, volunteering, or careers advice; small experiments to find meaning.",wbRev:true},
+  {id:44,cat:"DA",q:"I struggle to focus for long periods without getting distracted.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:45,cat:"SE",q:"I find myself replaying upsetting events in my head.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:46,cat:"NE",q:"I avoid situations that might make me feel anxious.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:47,cat:"DA",q:"I rarely feel a sense of achievement from completing tasks.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:48,cat:"NE",q:"I notice my heart racing during stressful moments.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:49,cat:"NE",q:"I feel relaxed and at ease most of the time.",rev:false,ne:1,da:0,se:0,wb:false},
+  {id:50,cat:"DA",q:"I struggle to keep momentum going once I've started something.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:51,cat:"NE",q:"I struggle to concentrate when I'm under pressure.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:52,cat:"WB",q:"I feel connected to my community or the people around me.",rev:false,ne:0,da:0,se:0,wb:true,wbAdv:"Feeling disconnected: join a local club or class; community centres; online interest groups.",wbRev:false},
+  {id:53,cat:"NE",q:"I worry a lot about things that might happen in the future.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:54,cat:"OV",q:"I sometimes avoid activities I would probably enjoy because of worry.",rev:true,ne:1/3,da:1/3,se:1/3,wb:false},
+  {id:55,cat:"DA",q:"I find myself relying on caffeine, sugar, or other boosts to get going.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:56,cat:"OV",q:"I can feel both calm and energised at the same time.",rev:false,ne:1/3,da:1/3,se:1/3,wb:false},
+  {id:57,cat:"WB",q:"I often feel like I'm just \"getting through\" each day.",rev:true,ne:0,da:0,se:0,wb:true,wbAdv:"Coping fatigue: review sleep, routine and supports; consider a wellbeing plan with a professional.",wbRev:true},
+  {id:58,cat:"SE",q:"I feel tense even when I have nothing to worry about.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:59,cat:"SE",q:"I often feel down or low in mood.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:60,cat:"SE",q:"I find it difficult to feel content, even when things are going well.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:61,cat:"SE",q:"I struggle to bounce back from disappointments.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:62,cat:"OV",q:"I struggle to enjoy things when I'm feeling anxious.",rev:true,ne:0.5,da:0,se:0.5,wb:false},
+  {id:63,cat:"WB",q:"I struggle to find joy in the small things in life.",rev:true,ne:0,da:0,se:0,wb:true,wbAdv:"Anhedonia (low joy): try mindful noticing exercises; schedule pleasant activities; talk to your GP.",wbRev:true},
+  {id:64,cat:"NE",q:"My body reacts strongly to sudden noises or surprises.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:65,cat:"OV",q:"I feel easily overwhelmed when I have a lot to do.",rev:true,ne:1/3,da:1/3,se:1/3,wb:false},
+  {id:66,cat:"SE",q:"My mood changes quickly and for no clear reason.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:67,cat:"SE",q:"I tend to recover my mood fairly quickly after setbacks.",rev:false,ne:0,da:0,se:1,wb:false},
+  {id:68,cat:"SE",q:"I notice that small inconveniences can spoil my whole day.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:69,cat:"OV",q:"I enjoy being social even when life is stressful.",rev:false,ne:0.5,da:0,se:0.5,wb:false},
+  {id:70,cat:"SE",q:"I feel my mood dips at certain times of the year.",rev:true,ne:0,da:0,se:1,wb:false},
+  {id:71,cat:"DA",q:"I have trouble staying committed to long-term projects.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:72,cat:"WB",q:"I find it difficult to feel hopeful about the future.",rev:true,ne:0,da:0,se:0,wb:true,wbAdv:"Low hope for the future: speak to your GP; NHS mental health services; Samaritans 116 123 (24/7).",wbRev:true},
+  {id:73,cat:"SE",q:"I can usually find something to feel grateful for each day.",rev:false,ne:0,da:0,se:1,wb:false},
+  {id:74,cat:"OV",q:"I find it hard to bounce back from setbacks and get going again.",rev:true,ne:0,da:0.5,se:0.5,wb:false},
+  {id:75,cat:"OV",q:"I can't enjoy relaxing activities if I'm behind on work or chores.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:76,cat:"DA",q:"I often feel excited about new opportunities.",rev:false,ne:0,da:1,se:0,wb:false},
+  {id:77,cat:"DA",q:"I don't feel much excitement about things I've been looking forward to.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:78,cat:"NE",q:"I have trouble calming down once I start feeling stressed.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:79,cat:"SE",q:"I enjoy peaceful and relaxing activities.",rev:false,ne:0,da:0,se:1,wb:false},
+  {id:80,cat:"DA",q:"I usually start my day feeling ready to get things done.",rev:false,ne:0,da:1,se:0,wb:false},
+  {id:81,cat:"NE",q:"Small problems sometimes feel overwhelming.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:82,cat:"DA",q:"I often procrastinate on important tasks.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:83,cat:"WB",q:"I have strong and supportive relationships.",rev:false,ne:0,da:0,se:0,wb:true,wbAdv:"Low social support: look into local peer groups; Mind local services; consider relationship counselling.",wbRev:false},
+  {id:84,cat:"OV",q:"I can keep a hopeful outlook even when I'm low on energy.",rev:false,ne:0,da:0.5,se:0.5,wb:false},
+  {id:85,cat:"WB",q:"I feel my life has a good balance between work, rest, and leisure.",rev:false,ne:0,da:0,se:0,wb:true,wbAdv:"Work–life imbalance: try time-blocking; discuss workload with manager; NHS stress management resources.",wbRev:false},
+  {id:86,cat:"DA",q:"I find it hard to get motivated to start tasks, even ones I enjoy.",rev:true,ne:0,da:1,se:0,wb:false},
+  {id:87,cat:"OV",q:"I find it hard to stay focused when I feel stressed.",rev:true,ne:0.5,da:0.5,se:0,wb:false},
+  {id:88,cat:"OV",q:"I lose interest in things quickly when my mood is low.",rev:true,ne:0,da:0.5,se:0.5,wb:false},
+  {id:89,cat:"NE",q:"I find myself preparing for the worst, even in safe situations.",rev:true,ne:1,da:0,se:0,wb:false},
+  {id:90,cat:"SE",q:"I often compare myself negatively to others.",rev:true,ne:0,da:0,se:1,wb:false}
+];
+
+const PAGE_SIZE = 15;
+let currentPage = 0;
+let responses = {};
+let participantInfo = {};
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startAssessment() {
+  participantInfo = {
+    name: document.getElementById('inp-name').value.trim(),
+    dob: document.getElementById('inp-dob').value,
+    date: document.getElementById('inp-date').value || new Date().toISOString().split('T')[0],
+    gp: document.getElementById('inp-gp').value.trim(),
+    nhs: document.getElementById('inp-nhs').value.trim()
+  };
+  currentPage = 0;
+  responses = {};
+  renderPage();
+  show('form');
+}
+
+function catClass(cat) {
+  return { NE:'q-cat-NE', DA:'q-cat-DA', SE:'q-cat-SE', WB:'q-cat-WB', OV:'q-cat-OV' }[cat] || 'q-cat-OV';
+}
+function catLabel(cat) {
+  return { NE:'Norepinephrine', DA:'Dopamine', SE:'Serotonin', WB:'Wellbeing', OV:'Overlap' }[cat] || 'Overlap';
+}
+
+function renderPage() {
+  const start = currentPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, QUESTIONS.length);
+  const qs = QUESTIONS.slice(start, end);
+  const answered = Object.keys(responses).length;
+  const pct = Math.round((answered / QUESTIONS.length) * 100);
+
+  document.getElementById('progress-label').textContent = `Questions ${start+1}–${end} of ${QUESTIONS.length}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('btn-prev').disabled = currentPage === 0;
+
+  const isLast = end >= QUESTIONS.length;
+  document.getElementById('btn-next').textContent = isLast ? 'See results →' : 'Next →';
+  document.getElementById('warn-msg').textContent = '';
+
+  const list = document.getElementById('q-list');
+  list.innerHTML = '';
+  const labels = ['Never','Rarely','Sometimes','Often','Always'];
+  qs.forEach(q => {
+    const val = responses[q.id] || 0;
+    let radios = '';
+    for (let i = 1; i <= 5; i++) {
+      radios += `<label title="${labels[i-1]}"><input type="radio" name="q${q.id}" value="${i}" ${val===i?'checked':''} onchange="setResponse(${q.id},${i})"><span class="likert-dot">${i}</span></label>`;
+    }
+    list.innerHTML += `<div class="q-row">
+      <span class="q-num">${q.id}</span>
+      <span class="q-text">${q.q}</span>
+      <span class="q-cat ${catClass(q.cat)}">${catLabel(q.cat)}</span>
+      <div class="likert">${radios}</div>
+    </div>`;
+  });
+}
+
+function setResponse(qid, val) {
+  responses[qid] = val;
+  const pct = Math.round((Object.keys(responses).length / QUESTIONS.length) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function changePage(dir) {
+  const start = currentPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, QUESTIONS.length);
+  if (dir === 1) {
+    const unanswered = QUESTIONS.slice(start, end).filter(q => !responses[q.id]);
+    if (unanswered.length > 0) {
+      document.getElementById('warn-msg').textContent =
+        `Please answer all ${unanswered.length} remaining question${unanswered.length > 1 ? 's' : ''} on this page.`;
+      return;
+    }
+    if (end >= QUESTIONS.length) { showResults(); return; }
+  }
+  currentPage += dir;
+  renderPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResults() {
+  const NE_MAX = 133.33;
+  const DA_MAX = 140.83;
+  const SE_MAX = 130.83;
+
+  let ne = 0, da = 0, se = 0;
+  QUESTIONS.forEach(q => {
+    const raw = responses[q.id] || 3;
+    const adj = q.rev ? (6 - raw) : raw;
+    ne += adj * q.ne;
+    da += adj * q.da;
+    se += adj * q.se;
+  });
+
+  const nePct = Math.round((ne / NE_MAX) * 100);
+  const daPct = Math.round((da / DA_MAX) * 100);
+  const sePct = Math.round((se / SE_MAX) * 100);
+
+  function interp(pct, name) {
+    if (pct >= 75) return `Your ${name} appears well-supported.`;
+    if (pct >= 60) return `Your ${name} is slightly reduced. Supportive lifestyle changes could help.`;
+    if (pct >= 45) return `Your ${name} is below optimal. Lifestyle changes and support may help.`;
+    return `Your ${name} is notably low. Consider speaking to a professional.`;
+  }
+
+  document.getElementById('ne-pct').textContent = nePct + '%';
+  document.getElementById('da-pct').textContent = daPct + '%';
+  document.getElementById('se-pct').textContent = sePct + '%';
+  document.getElementById('ne-bar').style.width = nePct + '%';
+  document.getElementById('da-bar').style.width = daPct + '%';
+  document.getElementById('se-bar').style.width = sePct + '%';
+  document.getElementById('ne-interp').textContent = interp(nePct, 'norepinephrine');
+  document.getElementById('da-interp').textContent = interp(daPct, 'dopamine');
+  document.getElementById('se-interp').textContent = interp(sePct, 'serotonin');
+
+  const r = Math.round((ne / NE_MAX) * 255);
+  const g = Math.round((da / DA_MAX) * 255);
+  const b = Math.round((se / SE_MAX) * 255);
+  const hex = '#' + [r,g,b].map(v => Math.min(255,Math.max(0,v)).toString(16).padStart(2,'0')).join('');
+  document.getElementById('swatch-box').style.background = hex;
+  document.getElementById('swatch-hex').textContent = hex.toUpperCase() + '  ·  RGB(' + r + ', ' + g + ', ' + b + ')';
+
+  const adviceList = document.getElementById('advice-list');
+  adviceList.innerHTML = '';
+  let anyAdv = false;
+  QUESTIONS.filter(q => q.wb && q.wbAdv).forEach(q => {
+    const raw = responses[q.id] || 3;
+    const trigger = q.wbRev ? raw >= 4 : raw <= 2;
+    if (trigger) {
+      anyAdv = true;
+      adviceList.innerHTML += `<div class="advice-item"><i class="ti ti-info-circle"></i><p>${q.wbAdv}</p></div>`;
+    }
+  });
+  document.getElementById('advice-section').style.display = anyAdv ? 'block' : 'none';
+
+  const metaParts = [];
+  if (participantInfo.name) metaParts.push(participantInfo.name);
+  if (participantInfo.date) metaParts.push(participantInfo.date);
+  document.getElementById('res-meta').textContent = metaParts.join(' · ') || 'Assessment complete';
+
+  show('results');
+}
+
+function restart() {
+  responses = {};
+  currentPage = 0;
+  show('welcome');
+}
+
+document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
