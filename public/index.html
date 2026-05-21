@@ -492,11 +492,11 @@
 
       <!-- Navigation -->
       <div class="nhsuk-button-group" style="margin-top:24px">
-        <button class="nhsuk-button" id="btn-next" onclick="changePage(1)" data-module="nhsuk-button" type="button">
-          Continue <span aria-hidden="true">→</span>
-        </button>
         <button class="nhsuk-button nhsuk-button--secondary" id="btn-prev" onclick="changePage(-1)" type="button" style="visibility:hidden">
           <span aria-hidden="true">← </span>Back
+        </button>
+        <button class="nhsuk-button" id="btn-next" onclick="changePage(1)" data-module="nhsuk-button" type="button">
+          Continue <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>
@@ -535,7 +535,7 @@
         <div>
           <div class="tc-swatch__title" id="swatch-title">Your Trichromind colour</div>
           <div class="tc-swatch__hex" id="swatch-hex"></div>
-          <div class="tc-swatch__sub">RGB blend of your three domain scores</div>
+          <div class="tc-swatch__sub">Hue blend of your three domain scores</div>
         </div>
       </div>
 
@@ -548,7 +548,7 @@
         <p class="nhsuk-body-s nhsuk-u-secondary-text-colour">
           This is an informational tool — not a clinical diagnosis or medical advice.
           If you are concerned about your mental health, please speak to your GP or contact NHS 111.<br>
-          Designed by <strong>Matthew Brookes</strong>. Digital version built with Claude.
+          Designed by <strong>Matthew Brookes</strong>.
         </p>
       </div>
 
@@ -891,9 +891,26 @@ function showResults() {
     document.getElementById(`${k}-interp`).textContent = interp(pct, name);
   });
 
-  const r = Math.min(255, Math.round((ne / NE_MAX) * 255));
-  const g = Math.min(255, Math.round((da / DA_MAX) * 255));
-  const b = Math.min(255, Math.round((se / SE_MAX) * 255));
+  // Weighted circular-mean of each domain's brand hue, fixed saturation so the
+  // result is always vivid — avoids grey when scores are balanced.
+  const neHue = 219, daHue = 148, seHue = 328;
+  const wTotal = (nePct + daPct + sePct) || 1;
+  const neW = nePct / wTotal, daW = daPct / wTotal, seW = sePct / wTotal;
+  const toRad = h => h * Math.PI / 180;
+  const cx = neW*Math.cos(toRad(neHue)) + daW*Math.cos(toRad(daHue)) + seW*Math.cos(toRad(seHue));
+  const cy = neW*Math.sin(toRad(neHue)) + daW*Math.sin(toRad(daHue)) + seW*Math.sin(toRad(seHue));
+  let hue = Math.atan2(cy, cx) * 180 / Math.PI;
+  if (hue < 0) hue += 360;
+  const avgPct = (nePct + daPct + sePct) / 3;
+  const lightness = Math.round(38 + (avgPct / 100) * 14);
+  const hslToRgb = (h, s, l) => {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
+  };
+  const [r, g, b] = hslToRgb(Math.round(hue), 65, lightness);
   const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
   document.getElementById('swatch-box').style.background = hex;
   document.getElementById('swatch-hex').textContent = hex.toUpperCase() + ' · RGB(' + r + ', ' + g + ', ' + b + ')';
