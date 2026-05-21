@@ -167,7 +167,19 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
 .nhsuk-input--width-20 { max-width: 59ex; }
 .nhsuk-input--width-10 { max-width: 31ex; }
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 32px;
+  align-items: start;
+}
+.form-grid .nhsuk-form-group {
+  margin-bottom: 20px;
+}
+.form-grid .nhsuk-input {
+  width: 100%;
+  max-width: 100%;
+}
 
 /* ── NHS Buttons ────────────────────────────────────────────────────── */
 .nhsuk-button {
@@ -490,6 +502,28 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
   text-align: center;
   line-height: 1.2;
 }
+.nhsuk-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.likert-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.likert-fieldset legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 10px;
+}
 @media (max-width: 560px) {
   h1 { font-size: 24px; }
   .nt-cards { grid-template-columns: 1fr; }
@@ -537,27 +571,30 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
     </div>
 
     <div class="form-grid">
+      <!-- Row 1: Full name | Date of birth -->
       <div class="nhsuk-form-group">
         <label class="nhsuk-label" for="inp-name">Full name <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
-        <input class="nhsuk-input nhsuk-input--width-20" type="text" id="inp-name" autocomplete="name" placeholder="">
+        <input class="nhsuk-input" type="text" id="inp-name" autocomplete="name">
       </div>
       <div class="nhsuk-form-group">
         <label class="nhsuk-label" for="inp-dob">Date of birth <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
-        <div class="nhsuk-hint">For example, 15 03 1984</div>
-        <input class="nhsuk-input nhsuk-input--width-10" type="date" id="inp-dob">
+        <input class="nhsuk-input" type="date" id="inp-dob" aria-describedby="dob-hint">
+        <div class="nhsuk-hint" id="dob-hint" style="margin-top:4px;margin-bottom:0">For example, 15 03 1984</div>
       </div>
+      <!-- Row 2: Date of assessment | GP surgery -->
       <div class="nhsuk-form-group">
         <label class="nhsuk-label" for="inp-date">Date of assessment</label>
-        <input class="nhsuk-input nhsuk-input--width-10" type="date" id="inp-date">
+        <input class="nhsuk-input" type="date" id="inp-date">
       </div>
       <div class="nhsuk-form-group">
         <label class="nhsuk-label" for="inp-gp">GP surgery <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
-        <input class="nhsuk-input nhsuk-input--width-20" type="text" id="inp-gp" placeholder="">
+        <input class="nhsuk-input" type="text" id="inp-gp">
       </div>
+      <!-- Row 3: NHS number (left column only) -->
       <div class="nhsuk-form-group">
         <label class="nhsuk-label" for="inp-nhs">NHS number <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
-        <div class="nhsuk-hint">10 digit number, e.g. 485 777 3456</div>
-        <input class="nhsuk-input nhsuk-input--width-10" type="text" id="inp-nhs" inputmode="numeric" placeholder="">
+        <div class="nhsuk-hint" id="nhs-hint">10 digit number, for example 485 777 3456</div>
+        <input class="nhsuk-input" type="text" id="inp-nhs" aria-describedby="nhs-hint" inputmode="numeric" autocomplete="off">
       </div>
     </div>
 
@@ -579,16 +616,20 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
         <span id="progress-pct">0% complete</span>
       </div>
       <div class="nhsuk-progress__bar">
-        <div class="nhsuk-progress__fill" id="progress-fill" style="width:0%"></div>
+        <div class="nhsuk-progress__fill" id="progress-fill" style="width:0%"
+          role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+          aria-label="Assessment progress"></div>
       </div>
     </div>
 
     <div class="labels-toggle-bar">
-      <label class="toggle-switch" for="labels-toggle" title="Show or hide domain labels">
-        <input type="checkbox" id="labels-toggle" checked onchange="toggleLabels(this.checked)">
-        <span class="toggle-slider"></span>
+      <label class="toggle-switch" for="labels-toggle">
+        <input type="checkbox" id="labels-toggle" checked
+          aria-label="Show domain labels (Norepinephrine, Dopamine, Serotonin)"
+          onchange="toggleLabels(this.checked)">
+        <span class="toggle-slider" aria-hidden="true"></span>
       </label>
-      <span>Show domain labels</span>
+      <span id="labels-toggle-desc">Show domain labels</span>
       <span style="font-weight:400;color:var(--nhs-grey3);font-size:13px;margin-left:4px">(Norepinephrine / Dopamine / Serotonin)</span>
     </div>
 
@@ -605,13 +646,13 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
 
     <div class="q-panel" id="q-list"></div>
 
-    <div class="nhsuk-error-message" id="warn-msg">
-      ✕ Please answer all questions on this page before continuing
+    <div class="nhsuk-error-message" id="warn-msg" role="alert" aria-live="assertive" aria-atomic="true">
+      Error: Some questions on this page have not been answered. Select an option for each highlighted question, then select Continue.
     </div>
 
     <div class="nhsuk-button-group">
-      <button class="nhsuk-button nhsuk-button--secondary" id="btn-prev" onclick="changePage(-1)">← Back</button>
-      <button class="nhsuk-button" id="btn-next" onclick="changePage(1)">Continue →</button>
+      <button class="nhsuk-button nhsuk-button--secondary" id="btn-prev" onclick="changePage(-1)"><span aria-hidden="true">← </span>Back</button>
+      <button class="nhsuk-button" id="btn-next" onclick="changePage(1)">Continue <span aria-hidden="true">→</span></button>
     </div>
   </div>
 
@@ -620,6 +661,7 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
     <h1>Your results</h1>
     <p id="res-meta" style="color:var(--nhs-grey3);margin-top:-8px;margin-bottom:20px;font-size:14px;"></p>
 
+    <h2 class="nhsuk-visually-hidden">Domain scores</h2>
     <div class="nt-cards">
       <div class="nt-card nt-card-ne">
         <div class="nt-card-label">Norepinephrine</div>
@@ -651,13 +693,13 @@ p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
     </div>
 
     <div id="advice-section" style="display:none">
-      <h3>Wellbeing notes</h3>
+      <h2>Wellbeing notes</h2>
       <div class="advice-list" id="advice-list"></div>
     </div>
 
     <div class="nhsuk-footer">
       This is an informational tool — not a clinical diagnosis or medical advice. If you are concerned about your mental health, please speak to your GP or contact NHS 111.
-      <br><br>Designed by <strong>Matthew Brookes</strong>.
+      <br><br>Designed by <strong>Matthew Brookes</strong>. Digital version built with Claude.
     </div>
 
     <div class="nhsuk-button-group">
@@ -812,9 +854,20 @@ function resumeAssessment() {
 }
 
 /* ── Screen helpers ─────────────────────────────────────────────── */
+const PAGE_TITLES = {
+  welcome: 'About this questionnaire – Trichromind',
+  form:    'Questions – Trichromind',
+  results: 'Your results – Trichromind'
+};
 function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.setAttribute('aria-hidden', 'true');
+  });
+  const el = document.getElementById('screen-' + id);
+  el.classList.add('active');
+  el.removeAttribute('aria-hidden');
+  document.title = PAGE_TITLES[id] || 'Trichromind';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -862,12 +915,19 @@ function renderPage() {
 
   document.getElementById('progress-label').textContent = `Questions ${start+1}–${end} of ${QUESTIONS.length}`;
   document.getElementById('progress-pct').textContent   = pct + '% complete';
-  document.getElementById('progress-fill').style.width  = pct + '%';
+  const fillEl = document.getElementById('progress-fill');
+  fillEl.style.width = pct + '%';
+  fillEl.setAttribute('aria-valuenow', pct);
   document.getElementById('btn-prev').style.visibility  = currentPage === 0 ? 'hidden' : 'visible';
   document.getElementById('labels-toggle').checked = showLabels;
 
   const isLast = end >= QUESTIONS.length;
-  document.getElementById('btn-next').textContent = isLast ? 'See results' : 'Continue →';
+  const nextBtn = document.getElementById('btn-next');
+  if (isLast) {
+    nextBtn.innerHTML = 'See results';
+  } else {
+    nextBtn.innerHTML = 'Continue <span aria-hidden="true">\u2192</span>';
+  }
   document.getElementById('warn-msg').classList.remove('visible');
 
   const labels = ['Never','Rarely','Sometimes','Often','Always'];
@@ -881,23 +941,31 @@ function renderPage() {
     let radios = '';
     for (let i = 1; i <= 5; i++) {
       const sel = val === i ? 'selected' : '';
-      radios += `<label class="${sel}" onclick="setResponse(${q.id}, ${i}, this)">
-        <input type="radio" name="q${q.id}" value="${i}" ${val===i?'checked':''}>
-        <span class="likert-inner">
+      const inputId = `q${q.id}-opt${i}`;
+      radios += `<label class="${sel}" for="${inputId}">
+        <input type="radio" id="${inputId}" name="q${q.id}" value="${i}" ${val===i?'checked':''}
+          onchange="setResponse(${q.id}, ${i}, this.closest('label'))">
+        <span class="likert-inner" aria-hidden="true">
           <span class="likert-num">${i}</span>
           <span class="likert-lbl">${labels[i-1]}</span>
         </span>
+        <span class="nhsuk-visually-hidden">${i} – ${labels[i-1]}</span>
       </label>`;
     }
 
     const tagHidden = showLabels ? '' : 'hidden';
+    const errorId = `q-err-${q.id}`;
     list.innerHTML += `<div class="q-row" id="q-row-${q.id}">
-      <span class="q-num">${q.id}</span>
+      <span class="q-num" aria-hidden="true">${q.id}</span>
       <div class="q-body">
-        <span class="q-unanswered-flag">• This question needs an answer</span>
-        <span class="q-cat-tag ${meta.cls} ${tagHidden}" style="background:${meta.bg};color:${meta.color}">${meta.label}</span>
-        <div class="q-text">${q.q}</div>
-        <div class="likert">${radios}</div>
+        <fieldset class="likert-fieldset">
+          <legend>
+            <span class="q-unanswered-flag" id="${errorId}">• This question needs an answer</span>
+            <span class="q-cat-tag ${meta.cls} ${tagHidden}" style="background:${meta.bg};color:${meta.color}" aria-hidden="${showLabels ? 'false' : 'true'}">${meta.label}</span>
+            <span class="q-text">${q.q}</span>
+          </legend>
+          <div class="likert" role="group" aria-describedby="${errorId}">${radios}</div>
+        </fieldset>
       </div>
     </div>`;
   });
@@ -915,7 +983,9 @@ function setResponse(qid, val, clickedLabel) {
   // Update progress
   const pct = Math.round((Object.keys(responses).length / QUESTIONS.length) * 100);
   document.getElementById('progress-pct').textContent  = pct + '% complete';
-  document.getElementById('progress-fill').style.width = pct + '%';
+  const fillSR = document.getElementById('progress-fill');
+  fillSR.style.width = pct + '%';
+  fillSR.setAttribute('aria-valuenow', pct);
   saveProgress();
 }
 
