@@ -4,316 +4,643 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Trichromind — Neurotransmitter Assessment</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frutiger:wght@400;600&display=swap" rel="stylesheet">
 <style>
+/* ── NHS Design System ───────────────────────────────────────────────── */
+:root {
+  --nhs-blue:       #003087;
+  --nhs-blue-dark:  #002060;
+  --nhs-blue-mid:   #005EB8;
+  --nhs-blue-light: #41B6E6;
+  --nhs-green:      #007F3B;
+  --nhs-red:        #DA291C;
+  --nhs-warm-yellow:#FFB81C;
+  --nhs-purple:     #330072;
+  --nhs-white:      #FFFFFF;
+  --nhs-grey1:      #231F20;
+  --nhs-grey2:      #425563;
+  --nhs-grey3:      #768692;
+  --nhs-grey4:      #AEB7BD;
+  --nhs-grey5:      #D8DDE0;
+  --nhs-grey6:      #F0F4F5;
+
+  --ne:     #003087;
+  --ne-bg:  #D5E4F7;
+  --da:     #007F3B;
+  --da-bg:  #D4EDDA;
+  --se:     #7C2855;
+  --se-bg:  #F2DCE8;
+
+  --font: 'Frutiger', 'Arial', sans-serif;
+  --focus: 4px solid #FFB81C;
+  --focus-offset: 0px;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg: #ffffff;
-  --bg2: #f5f5f2;
-  --bg3: #eeede9;
-  --text: #1a1a18;
-  --text2: #6b6b67;
-  --text3: #a0a09c;
-  --border: rgba(0,0,0,0.12);
-  --border2: rgba(0,0,0,0.22);
-  --radius: 8px;
-  --radius-lg: 12px;
-  --ne: #185FA5;
-  --ne-bg: #E6F1FB;
-  --ne-text: #0C447C;
-  --da: #3B6D11;
-  --da-bg: #EAF3DE;
-  --da-text: #27500A;
-  --se: #993556;
-  --se-bg: #FBEAF0;
-  --se-text: #72243E;
-  --amber-bg: #FAEEDA;
-  --amber-text: #633806;
-  --amber-icon: #854F0B;
-  --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Fira Mono', 'Consolas', monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1c1a;
-    --bg2: #252523;
-    --bg3: #2e2e2b;
-    --text: #f0efeb;
-    --text2: #9e9e98;
-    --text3: #6b6b65;
-    --border: rgba(255,255,255,0.10);
-    --border2: rgba(255,255,255,0.20);
-    --ne-bg: #0c2e52;
-    --ne-text: #85B7EB;
-    --da-bg: #1a3308;
-    --da-text: #97C459;
-    --se-bg: #3d1526;
-    --se-text: #ED93B1;
-    --amber-bg: #3a2408;
-    --amber-text: #FAC775;
-    --amber-icon: #EF9F27;
-  }
-}
+html { font-size: 16px; }
 
 body {
   font-family: var(--font);
-  background: var(--bg3);
-  color: var(--text);
+  background: var(--nhs-grey6);
+  color: var(--nhs-grey1);
   min-height: 100vh;
-  padding: 2rem 1rem;
+  line-height: 1.5;
 }
 
-#app {
-  max-width: 700px;
+/* NHS header bar */
+.nhs-header {
+  background: var(--nhs-blue);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nhs-beta-tag {
+  background: var(--nhs-warm-yellow);
+  color: var(--nhs-grey1);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  line-height: 1;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+.nhs-header-title {
+  color: var(--nhs-white);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* NHS blue banner */
+.nhs-banner {
+  background: var(--nhs-blue-mid);
+  color: var(--nhs-white);
+  padding: 10px 24px;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 760px;
   margin: 0 auto;
-  background: var(--bg);
-  border-radius: var(--radius-lg);
-  border: 0.5px solid var(--border);
-  padding: 2rem;
+  padding: 32px 24px 64px;
 }
 
 .screen { display: none; }
 .screen.active { display: block; }
 
-/* BRAND */
-.brand { display: flex; align-items: baseline; gap: 10px; margin-bottom: 1.5rem; }
-.brand-title { font-size: 22px; font-weight: 500; }
-.brand-sub { font-size: 14px; color: var(--text2); }
+/* ── Typography ─────────────────────────────────────────────────────── */
+h1 { font-size: 32px; font-weight: 700; line-height: 1.2; color: var(--nhs-grey1); margin-bottom: 16px; }
+h2 { font-size: 24px; font-weight: 700; line-height: 1.3; color: var(--nhs-grey1); margin-bottom: 12px; }
+h3 { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+p  { font-size: 16px; margin-bottom: 16px; color: var(--nhs-grey2); }
 
-/* INTRO */
-.intro-card { background: var(--bg2); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.intro-card p { font-size: 15px; color: var(--text2); line-height: 1.6; }
-
-.pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
-.pill { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
-.pill-ne { background: var(--ne-bg); color: var(--ne-text); }
-.pill-da { background: var(--da-bg); color: var(--da-text); }
-.pill-se { background: var(--se-bg); color: var(--se-text); }
-.pill-wb { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border); }
-
-.details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
-.field-group { display: flex; flex-direction: column; gap: 4px; }
-.field-group label { font-size: 12px; color: var(--text2); }
-.field-group input {
-  font-size: 14px; font-family: var(--font);
-  padding: 8px 10px; border-radius: var(--radius);
-  border: 0.5px solid var(--border2); background: var(--bg);
-  color: var(--text); outline: none;
+/* ── NHS Inset / Warning ────────────────────────────────────────────── */
+.nhsuk-inset-text {
+  border-left: 4px solid var(--nhs-blue-mid);
+  padding: 16px 20px;
+  background: var(--nhs-white);
+  margin-bottom: 24px;
 }
-.field-group input:focus { border-color: var(--text); }
+.nhsuk-inset-text p { margin: 0; }
 
-.start-btn {
-  width: 100%; padding: 12px; font-size: 16px; font-weight: 500;
-  cursor: pointer; border-radius: var(--radius); background: var(--text);
-  color: var(--bg); border: none; font-family: var(--font);
+.nhsuk-warning-callout {
+  border: 1px solid var(--nhs-grey5);
+  border-top: 5px solid var(--nhs-warm-yellow);
+  padding: 16px 20px;
+  background: var(--nhs-white);
+  margin-bottom: 24px;
 }
-.start-btn:hover { opacity: 0.85; }
+.nhsuk-warning-callout p { margin: 0; font-size: 14px; }
 
-/* PROGRESS */
-.progress-wrap { margin-bottom: 1.5rem; }
-.progress-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
-.progress-bar { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width 0.3s ease; }
-.page-header { font-size: 12px; color: var(--text2); margin-bottom: 1rem; }
+/* ── NHS Tags ───────────────────────────────────────────────────────── */
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.tag-ne { background: var(--ne-bg); color: var(--ne); }
+.tag-da { background: var(--da-bg); color: var(--da); }
+.tag-se { background: var(--se-bg); color: var(--se); }
+.tag-wb { background: var(--nhs-grey5); color: var(--nhs-grey2); }
 
-/* QUESTIONS */
-.q-list { display: flex; flex-direction: column; gap: 2px; }
+/* ── NHS Form Elements ──────────────────────────────────────────────── */
+.nhsuk-form-group { margin-bottom: 24px; }
+.nhsuk-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--nhs-grey1);
+  margin-bottom: 6px;
+}
+.nhsuk-hint {
+  font-size: 14px;
+  color: var(--nhs-grey3);
+  margin-bottom: 6px;
+  margin-top: -2px;
+}
+.nhsuk-input {
+  font-family: var(--font);
+  font-size: 16px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid var(--nhs-grey3);
+  border-radius: 0;
+  color: var(--nhs-grey1);
+  background: var(--nhs-white);
+  -webkit-appearance: none;
+}
+.nhsuk-input:focus {
+  outline: var(--focus);
+  outline-offset: var(--focus-offset);
+  border-color: var(--nhs-grey1);
+}
+.nhsuk-input--width-20 { max-width: 59ex; }
+.nhsuk-input--width-10 { max-width: 31ex; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+
+/* ── NHS Buttons ────────────────────────────────────────────────────── */
+.nhsuk-button {
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: 0 4px 0 #003d16;
+  background: var(--nhs-green);
+  color: var(--nhs-white);
+  transition: background 0.1s;
+  -webkit-appearance: none;
+}
+.nhsuk-button:hover { background: #005a29; }
+.nhsuk-button:focus { outline: var(--focus); }
+.nhsuk-button:active { top: 2px; box-shadow: 0 2px 0 #003d16; position: relative; }
+.nhsuk-button--secondary {
+  background: var(--nhs-grey6);
+  color: var(--nhs-grey1);
+  box-shadow: 0 4px 0 var(--nhs-grey4);
+}
+.nhsuk-button--secondary:hover { background: var(--nhs-grey5); }
+.nhsuk-button-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+
+/* ── Progress bar ───────────────────────────────────────────────────── */
+.nhsuk-progress {
+  background: var(--nhs-white);
+  border: 1px solid var(--nhs-grey5);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.nhsuk-progress__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--nhs-grey2);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.nhsuk-progress__bar {
+  height: 8px;
+  background: var(--nhs-grey5);
+  border-radius: 0;
+}
+.nhsuk-progress__fill {
+  height: 100%;
+  background: var(--nhs-blue-mid);
+  transition: width 0.35s ease;
+}
+
+/* ── Labels toggle ──────────────────────────────────────────────────── */
+.labels-toggle-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--nhs-white);
+  border: 1px solid var(--nhs-grey5);
+  border-bottom: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--nhs-grey2);
+}
+.labels-toggle-bar span { font-weight: 600; }
+
+/* NHS-style toggle switch */
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--nhs-grey4);
+  cursor: pointer;
+  border-radius: 24px;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--nhs-blue-mid); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.toggle-switch input:focus + .toggle-slider { outline: var(--focus); }
+
+/* ── Question list ──────────────────────────────────────────────────── */
+.q-panel {
+  background: var(--nhs-white);
+  border: 1px solid var(--nhs-grey5);
+  margin-bottom: 2px;
+}
 .q-row {
-  background: var(--bg); border: 0.5px solid var(--border);
-  border-radius: var(--radius); padding: 12px 14px;
-  display: flex; gap: 12px; align-items: center;
-  transition: background 0.12s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--nhs-grey6);
+  transition: background 0.1s;
 }
-.q-row:hover { background: var(--bg2); }
-.q-num { font-size: 12px; color: var(--text3); min-width: 22px; flex-shrink: 0; }
-.q-text { flex: 1; font-size: 14px; color: var(--text); line-height: 1.45; }
-.q-cat {
-  font-size: 11px; padding: 2px 7px; border-radius: 10px;
-  white-space: nowrap; align-self: flex-start; margin-top: 2px; flex-shrink: 0;
+.q-row:last-child { border-bottom: none; }
+.q-row:hover { background: var(--nhs-grey6); }
+.q-num { font-size: 13px; color: var(--nhs-grey4); min-width: 28px; padding-top: 3px; flex-shrink: 0; font-weight: 600; }
+.q-body { flex: 1; }
+.q-text { font-size: 15px; color: var(--nhs-grey1); line-height: 1.5; margin-bottom: 10px; }
+.q-cat-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  margin-bottom: 10px;
+  border-radius: 2px;
+  transition: opacity 0.2s;
 }
-.q-cat-NE { background: var(--ne-bg); color: var(--ne-text); }
-.q-cat-DA { background: var(--da-bg); color: var(--da-text); }
-.q-cat-SE { background: var(--se-bg); color: var(--se-text); }
-.q-cat-OV { background: var(--bg2); color: var(--text2); }
-.q-cat-WB { background: var(--amber-bg); color: var(--amber-text); }
+.q-cat-tag.hidden { opacity: 0; pointer-events: none; height: 0; overflow: hidden; margin: 0; padding: 0; }
 
-.likert { display: flex; gap: 3px; flex-shrink: 0; }
-.likert label { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+/* Likert as NHS radio-style row */
+.likert {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.likert label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border: 2px solid var(--nhs-grey5);
+  background: var(--nhs-white);
+  font-size: 13px;
+  color: var(--nhs-grey2);
+  font-weight: 600;
+  transition: all 0.1s;
+  min-width: 44px;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.likert label:hover { border-color: var(--nhs-blue-mid); background: #EBF5FB; }
 .likert input[type=radio] { display: none; }
-.likert-dot {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 0.5px solid var(--border2); display: flex; align-items: center;
-  justify-content: center; font-size: 12px; font-weight: 500;
-  color: var(--text2); transition: all 0.12s;
+.likert input:checked + .likert-inner { color: var(--nhs-white); }
+.likert-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; }
+.likert-num { font-size: 15px; font-weight: 700; }
+.likert-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; opacity: 0.85; line-height: 1.1; }
+.likert label.selected { border-color: var(--nhs-blue-mid); background: var(--nhs-blue-mid); color: var(--nhs-white); }
+
+/* ── Validation error ───────────────────────────────────────────────── */
+.nhsuk-error-message {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--nhs-red);
+  padding: 4px 0;
+  display: none;
 }
-.likert input:checked + .likert-dot { background: var(--text); color: var(--bg); border-color: var(--text); }
-.likert label:hover .likert-dot { background: var(--bg2); }
+.nhsuk-error-message.visible { display: block; }
 
-.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; gap: 12px; }
-.nav-btn {
-  padding: 10px 24px; font-size: 14px; font-weight: 500;
-  cursor: pointer; border-radius: var(--radius);
-  border: 0.5px solid var(--border2); background: var(--bg);
-  color: var(--text); font-family: var(--font);
+.q-row--unanswered {
+  background: #FFF5F5 !important;
+  border-left: 4px solid var(--nhs-red);
+  position: relative;
 }
-.nav-btn:hover { background: var(--bg2); }
-.nav-btn.primary { background: var(--text); color: var(--bg); border: none; }
-.nav-btn.primary:hover { opacity: 0.85; }
-.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.warn { font-size: 13px; color: #c0392b; flex: 1; text-align: center; }
+.q-row--unanswered .q-text {
+  color: var(--nhs-grey1);
+}
+.q-unanswered-flag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--nhs-red);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  display: none;
+}
+.q-row--unanswered .q-unanswered-flag { display: block; }
+.q-row--unanswered .likert label {
+  border-color: #F5B8B4;
+}
+.q-row--unanswered .likert label:hover {
+  border-color: var(--nhs-red);
+  background: #FFECEC;
+}
 
-/* RESULTS */
-.res-header { margin-bottom: 1.5rem; }
-.res-header h2 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
-.res-meta { font-size: 13px; color: var(--text2); }
-
-.nt-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-.nt-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; }
-.nt-card-label { font-size: 12px; font-weight: 500; margin-bottom: 6px; }
-.nt-card-pct { font-size: 28px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
-.nt-bar-bg { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
-.nt-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-.nt-interp { font-size: 12px; color: var(--text2); margin-top: 8px; line-height: 1.4; }
-.nt-ne .nt-card-label { color: var(--ne); }
-.nt-ne .nt-bar-fill { background: var(--ne); }
-.nt-da .nt-card-label { color: var(--da); }
-.nt-da .nt-bar-fill { background: var(--da); }
-.nt-se .nt-card-label { color: var(--se); }
-.nt-se .nt-bar-fill { background: var(--se); }
+/* ── Results ────────────────────────────────────────────────────────── */
+.nt-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.nt-card {
+  background: var(--nhs-white);
+  border: 1px solid var(--nhs-grey5);
+  border-top-width: 5px;
+  padding: 16px;
+}
+.nt-card-ne { border-top-color: var(--ne); }
+.nt-card-da { border-top-color: var(--da); }
+.nt-card-se { border-top-color: var(--se); }
+.nt-card-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+.nt-card-ne .nt-card-label { color: var(--ne); }
+.nt-card-da .nt-card-label { color: var(--da); }
+.nt-card-se .nt-card-label { color: var(--se); }
+.nt-card-pct { font-size: 36px; font-weight: 700; color: var(--nhs-grey1); margin-bottom: 10px; }
+.nt-bar-bg { height: 8px; background: var(--nhs-grey5); margin-bottom: 10px; }
+.nt-bar-fill { height: 100%; transition: width 0.7s ease; }
+.nt-card-ne .nt-bar-fill { background: var(--ne); }
+.nt-card-da .nt-bar-fill { background: var(--da); }
+.nt-card-se .nt-bar-fill { background: var(--se); }
+.nt-interp { font-size: 13px; color: var(--nhs-grey2); line-height: 1.4; }
 
 .colour-swatch {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;
-  padding: 14px 16px; background: var(--bg2); border-radius: var(--radius);
+  display: flex; align-items: center; gap: 16px;
+  background: var(--nhs-white); border: 1px solid var(--nhs-grey5);
+  padding: 16px 20px; margin-bottom: 24px;
 }
-.swatch-box { width: 40px; height: 40px; border-radius: var(--radius); flex-shrink: 0; border: 0.5px solid var(--border); }
-.swatch-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
-.swatch-hex { font-size: 11px; font-family: var(--font-mono); color: var(--text3); }
-.swatch-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.swatch-box { width: 48px; height: 48px; flex-shrink: 0; border: 1px solid var(--nhs-grey5); }
+.swatch-label { font-size: 15px; font-weight: 700; color: var(--nhs-grey1); margin-bottom: 2px; }
+.swatch-hex { font-size: 12px; font-family: monospace; color: var(--nhs-grey3); }
+.swatch-sub { font-size: 13px; color: var(--nhs-grey2); margin-top: 2px; }
 
-.advice-section { margin-bottom: 1.5rem; }
-.advice-section h3 { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+.advice-list { margin-bottom: 24px; }
 .advice-item {
-  display: flex; gap: 10px; padding: 10px 14px;
-  border-radius: var(--radius); background: var(--amber-bg); margin-bottom: 6px;
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; background: var(--nhs-white);
+  border-left: 4px solid var(--nhs-warm-yellow);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--nhs-grey5);
+  border-right: 1px solid var(--nhs-grey5);
+  border-top: 1px solid var(--nhs-grey5);
 }
-.advice-item i { color: var(--amber-icon); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-.advice-item p { font-size: 13px; color: var(--amber-text); line-height: 1.5; }
+.advice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; color: var(--nhs-grey3); }
+.advice-item p { font-size: 14px; color: var(--nhs-grey1); margin: 0; line-height: 1.5; }
 
-.disclaimer {
-  font-size: 12px; color: var(--text3); padding: 10px 14px;
-  border: 0.5px solid var(--border); border-radius: var(--radius);
-  line-height: 1.5; margin-bottom: 1.5rem;
+.nhsuk-footer {
+  font-size: 13px; color: var(--nhs-grey3); padding: 12px 16px;
+  border: 1px solid var(--nhs-grey5); background: var(--nhs-white);
+  line-height: 1.5; margin-bottom: 24px;
 }
 
-.restart-btn {
-  padding: 10px 24px; font-size: 14px; cursor: pointer;
-  border-radius: var(--radius); border: 0.5px solid var(--border2);
-  background: var(--bg); color: var(--text); font-family: var(--font);
+/* resume banner */
+.resume-banner {
+  background: var(--nhs-blue);
+  color: var(--nhs-white);
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.restart-btn:hover { background: var(--bg2); }
+.resume-banner p { color: var(--nhs-white); margin: 0; font-size: 15px; }
+.resume-banner button {
+  font-family: var(--font);
+  font-size: 14px; font-weight: 600;
+  padding: 8px 16px;
+  background: var(--nhs-white);
+  color: var(--nhs-blue);
+  border: none; cursor: pointer;
+  flex-shrink: 0;
+}
+.resume-banner button:hover { background: var(--nhs-grey6); }
 
-@media (max-width: 520px) {
-  body { padding: 0; }
-  #app { border-radius: 0; border-left: none; border-right: none; padding: 1.25rem 1rem; min-height: 100vh; }
-  .details-grid { grid-template-columns: 1fr; }
-  .details-grid .field-group:first-child { grid-column: auto; }
+/* ── Scale key ──────────────────────────────────────────────────────── */
+.scale-key {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--nhs-white);
+  border: 1px solid var(--nhs-grey5);
+  border-top: none;
+  border-bottom: none;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+  gap: 6px 0;
+}
+.scale-key__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--nhs-grey2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 12px;
+  white-space: nowrap;
+}
+.scale-key__items {
+  display: flex;
+  gap: 0;
+  flex: 1;
+}
+.scale-key__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.scale-key__num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--nhs-grey5);
+  color: var(--nhs-grey1);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.scale-key__text {
+  font-size: 11px;
+  color: var(--nhs-grey2);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+@media (max-width: 560px) {
+  h1 { font-size: 24px; }
   .nt-cards { grid-template-columns: 1fr; }
-  .likert-dot { width: 24px; height: 24px; font-size: 11px; }
-  .q-cat { display: none; }
+  .form-grid { grid-template-columns: 1fr; }
+  .likert label { min-width: 36px; padding: 5px 6px; }
+  .likert-lbl { display: none; }
+  .container { padding: 16px 16px 48px; }
 }
+
 </style>
 </head>
 <body>
-<div id="app">
 
-  <!-- SCREEN 1: WELCOME -->
+<header class="nhs-header">
+  <div class="nhs-beta-tag">BETA</div>
+  <div class="nhs-header-title">Trichromind — Neurotransmitter Self-Assessment</div>
+</header>
+<div class="nhs-banner">This tool is for informational purposes only. It is not a clinical diagnosis.</div>
+
+<div class="container">
+
+  <!-- ── SCREEN: WELCOME ─────────────────────────────────────────── -->
   <div id="screen-welcome" class="screen active">
-    <div class="brand">
-      <span class="brand-title">Trichromind</span>
-      <span class="brand-sub">Neurotransmitter assessment</span>
-    </div>
-    <div class="intro-card">
-      <p>This questionnaire estimates relative patterns in three neurotransmitter domains based on your self-reported answers. It is informational only — not a diagnosis or medical advice.</p>
-    </div>
-    <div class="pills">
-      <span class="pill pill-ne">Norepinephrine</span>
-      <span class="pill pill-da">Dopamine</span>
-      <span class="pill pill-se">Serotonin</span>
-      <span class="pill pill-wb">Wellbeing</span>
-      <span class="pill pill-wb">90 questions</span>
-      <span class="pill pill-wb">Scale 1–5</span>
-    </div>
-    <div class="details-grid">
-      <div class="field-group" style="grid-column: 1 / 3;">
-        <label>Full name (optional)</label>
-        <input type="text" id="inp-name" placeholder="First and last name" />
-      </div>
-      <div class="field-group">
-        <label>Date of birth (optional)</label>
-        <input type="date" id="inp-dob" />
-      </div>
-      <div class="field-group">
-        <label>Date of assessment</label>
-        <input type="date" id="inp-date" />
-      </div>
-      <div class="field-group">
-        <label>GP surgery (optional)</label>
-        <input type="text" id="inp-gp" placeholder="GP practice name" />
-      </div>
-      <div class="field-group">
-        <label>NHS Patient ID (optional)</label>
-        <input type="text" id="inp-nhs" placeholder="NHS number" />
+
+    <div id="resume-banner" class="resume-banner" style="display:none">
+      <p>You have a saved assessment in progress. Would you like to continue where you left off?</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="resumeAssessment()">Continue</button>
+        <button onclick="clearSaved()" style="background:transparent;color:white;border:1px solid white;">Start fresh</button>
       </div>
     </div>
-    <button class="start-btn" onclick="startAssessment()">Begin assessment →</button>
+
+    <h1>About this questionnaire</h1>
+
+    <div class="nhsuk-inset-text">
+      <p>This 90-question self-assessment estimates relative patterns in three neurotransmitter domains — Norepinephrine, Dopamine, and Serotonin — based on your responses. Rate each statement from 1 (Never) to 5 (Always).</p>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <span class="tag tag-ne">Norepinephrine</span>
+      <span class="tag tag-da">Dopamine</span>
+      <span class="tag tag-se">Serotonin</span>
+      <span class="tag tag-wb">90 questions</span>
+      <span class="tag tag-wb">15–20 minutes</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="inp-name">Full name <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
+        <input class="nhsuk-input nhsuk-input--width-20" type="text" id="inp-name" autocomplete="name" placeholder="">
+      </div>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="inp-dob">Date of birth <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
+        <div class="nhsuk-hint">For example, 15 03 1984</div>
+        <input class="nhsuk-input nhsuk-input--width-10" type="date" id="inp-dob">
+      </div>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="inp-date">Date of assessment</label>
+        <input class="nhsuk-input nhsuk-input--width-10" type="date" id="inp-date">
+      </div>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="inp-gp">GP surgery <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
+        <input class="nhsuk-input nhsuk-input--width-20" type="text" id="inp-gp" placeholder="">
+      </div>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="inp-nhs">NHS number <span style="font-weight:400;color:var(--nhs-grey3)">(optional)</span></label>
+        <div class="nhsuk-hint">10 digit number, e.g. 485 777 3456</div>
+        <input class="nhsuk-input nhsuk-input--width-10" type="text" id="inp-nhs" inputmode="numeric" placeholder="">
+      </div>
+    </div>
+
+    <div class="nhsuk-warning-callout">
+      <p><strong>Important:</strong> Your answers are stored only in this browser session. Nothing is sent to any server or stored externally.</p>
+    </div>
+
+    <div class="nhsuk-button-group">
+      <button class="nhsuk-button" onclick="startAssessment()">Begin assessment</button>
+    </div>
   </div>
 
-  <!-- SCREEN 2: FORM -->
+  <!-- ── SCREEN: FORM ────────────────────────────────────────────── -->
   <div id="screen-form" class="screen">
-    <div class="progress-wrap">
-      <div class="progress-meta">
+
+    <div class="nhsuk-progress">
+      <div class="nhsuk-progress__label">
         <span id="progress-label">Questions 1–15 of 90</span>
-        <span id="progress-pct">0%</span>
+        <span id="progress-pct">0% complete</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="nhsuk-progress__bar">
+        <div class="nhsuk-progress__fill" id="progress-fill" style="width:0%"></div>
+      </div>
     </div>
-    <div class="page-header">Rate each statement: 1 = Never &nbsp;·&nbsp; 2 = Rarely &nbsp;·&nbsp; 3 = Sometimes &nbsp;·&nbsp; 4 = Often &nbsp;·&nbsp; 5 = Always</div>
-    <div class="q-list" id="q-list"></div>
-    <div class="nav-row">
-      <button class="nav-btn" id="btn-prev" onclick="changePage(-1)" disabled>← Back</button>
-      <span class="warn" id="warn-msg"></span>
-      <button class="nav-btn primary" id="btn-next" onclick="changePage(1)">Next →</button>
+
+    <div class="labels-toggle-bar">
+      <label class="toggle-switch" for="labels-toggle" title="Show or hide domain labels">
+        <input type="checkbox" id="labels-toggle" checked onchange="toggleLabels(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+      <span>Show domain labels</span>
+      <span style="font-weight:400;color:var(--nhs-grey3);font-size:13px;margin-left:4px">(Norepinephrine / Dopamine / Serotonin)</span>
+    </div>
+
+    <div class="scale-key">
+      <span class="scale-key__label">Scale</span>
+      <div class="scale-key__items">
+        <div class="scale-key__item"><span class="scale-key__num">1</span><span class="scale-key__text">Never</span></div>
+        <div class="scale-key__item"><span class="scale-key__num">2</span><span class="scale-key__text">Rarely</span></div>
+        <div class="scale-key__item"><span class="scale-key__num">3</span><span class="scale-key__text">Sometimes</span></div>
+        <div class="scale-key__item"><span class="scale-key__num">4</span><span class="scale-key__text">Often</span></div>
+        <div class="scale-key__item"><span class="scale-key__num">5</span><span class="scale-key__text">Always</span></div>
+      </div>
+    </div>
+
+    <div class="q-panel" id="q-list"></div>
+
+    <div class="nhsuk-error-message" id="warn-msg">
+      ✕ Please answer all questions on this page before continuing
+    </div>
+
+    <div class="nhsuk-button-group">
+      <button class="nhsuk-button nhsuk-button--secondary" id="btn-prev" onclick="changePage(-1)">← Back</button>
+      <button class="nhsuk-button" id="btn-next" onclick="changePage(1)">Continue →</button>
     </div>
   </div>
 
-  <!-- SCREEN 3: RESULTS -->
+  <!-- ── SCREEN: RESULTS ────────────────────────────────────────── -->
   <div id="screen-results" class="screen">
-    <div class="res-header">
-      <h2>Your results</h2>
-      <p class="res-meta" id="res-meta"></p>
-    </div>
+    <h1>Your results</h1>
+    <p id="res-meta" style="color:var(--nhs-grey3);margin-top:-8px;margin-bottom:20px;font-size:14px;"></p>
+
     <div class="nt-cards">
-      <div class="nt-card nt-ne">
+      <div class="nt-card nt-card-ne">
         <div class="nt-card-label">Norepinephrine</div>
         <div class="nt-card-pct" id="ne-pct">–</div>
         <div class="nt-bar-bg"><div class="nt-bar-fill" id="ne-bar" style="width:0%"></div></div>
         <div class="nt-interp" id="ne-interp"></div>
       </div>
-      <div class="nt-card nt-da">
+      <div class="nt-card nt-card-da">
         <div class="nt-card-label">Dopamine</div>
         <div class="nt-card-pct" id="da-pct">–</div>
         <div class="nt-bar-bg"><div class="nt-bar-fill" id="da-bar" style="width:0%"></div></div>
         <div class="nt-interp" id="da-interp"></div>
       </div>
-      <div class="nt-card nt-se">
+      <div class="nt-card nt-card-se">
         <div class="nt-card-label">Serotonin</div>
         <div class="nt-card-pct" id="se-pct">–</div>
         <div class="nt-bar-bg"><div class="nt-bar-fill" id="se-bar" style="width:0%"></div></div>
         <div class="nt-interp" id="se-interp"></div>
       </div>
     </div>
+
     <div class="colour-swatch">
       <div class="swatch-box" id="swatch-box"></div>
       <div>
@@ -322,17 +649,26 @@ body {
         <div class="swatch-sub">RGB blend of your three domain scores</div>
       </div>
     </div>
-    <div class="advice-section" id="advice-section">
-      <h3>Wellbeing pointers</h3>
-      <div id="advice-list"></div>
+
+    <div id="advice-section" style="display:none">
+      <h3>Wellbeing notes</h3>
+      <div class="advice-list" id="advice-list"></div>
     </div>
-    <div class="disclaimer">This is an informational tool — not a diagnosis. If concerned, please consult a qualified clinician or your GP.</div>
-    <button class="restart-btn" onclick="restart()">← Start over</button>
+
+    <div class="nhsuk-footer">
+      This is an informational tool — not a clinical diagnosis or medical advice. If you are concerned about your mental health, please speak to your GP or contact NHS 111.
+      <br><br>Designed by <strong>Matthew Brookes</strong>.
+    </div>
+
+    <div class="nhsuk-button-group">
+      <button class="nhsuk-button nhsuk-button--secondary" onclick="restart()">Start again</button>
+    </div>
   </div>
 
-</div>
+</div><!-- /container -->
 
 <script>
+/* ── Questions ────────────────────────────────────────────────── */
 const QUESTIONS = [
   {id:1,cat:"SE",q:"I feel calm and steady most of the time.",rev:false,ne:0,da:0,se:1,wb:false},
   {id:2,cat:"DA",q:"I lose interest in hobbies or activities that used to excite me.",rev:true,ne:0,da:1,se:0,wb:false},
@@ -427,101 +763,200 @@ const QUESTIONS = [
 ];
 
 const PAGE_SIZE = 15;
+const SAVE_KEY = 'trichromind_progress';
+
 let currentPage = 0;
 let responses = {};
 let participantInfo = {};
+let showLabels = true;
 
+/* ── Persistence ────────────────────────────────────────────────── */
+function saveProgress() {
+  sessionStorage.setItem(SAVE_KEY, JSON.stringify({
+    responses,
+    currentPage,
+    participantInfo,
+    showLabels,
+    savedAt: Date.now()
+  }));
+}
+
+function loadProgress() {
+  try {
+    const raw = sessionStorage.getItem(SAVE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function clearSaved() {
+  sessionStorage.removeItem(SAVE_KEY);
+  document.getElementById('resume-banner').style.display = 'none';
+}
+
+function resumeAssessment() {
+  const saved = loadProgress();
+  if (!saved) return;
+  responses = saved.responses || {};
+  currentPage = saved.currentPage || 0;
+  participantInfo = saved.participantInfo || {};
+  showLabels = saved.showLabels !== false;
+  // Restore form fields
+  if (participantInfo.name)  document.getElementById('inp-name').value  = participantInfo.name;
+  if (participantInfo.dob)   document.getElementById('inp-dob').value   = participantInfo.dob;
+  if (participantInfo.date)  document.getElementById('inp-date').value  = participantInfo.date;
+  if (participantInfo.gp)    document.getElementById('inp-gp').value    = participantInfo.gp;
+  if (participantInfo.nhs)   document.getElementById('inp-nhs').value   = participantInfo.nhs;
+  document.getElementById('resume-banner').style.display = 'none';
+  renderPage();
+  show('form');
+}
+
+/* ── Screen helpers ─────────────────────────────────────────────── */
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ── Category metadata ──────────────────────────────────────────── */
+const CAT_META = {
+  NE: { label: 'Norepinephrine', cls: 'tag-ne', bg: '#D5E4F7', color: '#003087' },
+  DA: { label: 'Dopamine',       cls: 'tag-da', bg: '#D4EDDA', color: '#007F3B' },
+  SE: { label: 'Serotonin',      cls: 'tag-se', bg: '#F2DCE8', color: '#7C2855' },
+  OV: { label: 'Overlap',        cls: 'tag-wb', bg: '#D8DDE0', color: '#425563' },
+  WB: { label: 'Wellbeing',      cls: 'tag-wb', bg: '#FFF3CD', color: '#856404' },
+};
+
+/* ── Toggle labels ──────────────────────────────────────────────── */
+function toggleLabels(on) {
+  showLabels = on;
+  document.querySelectorAll('.q-cat-tag').forEach(el => {
+    el.classList.toggle('hidden', !on);
+  });
+  saveProgress();
+}
+
+/* ── Start ──────────────────────────────────────────────────────── */
 function startAssessment() {
   participantInfo = {
     name: document.getElementById('inp-name').value.trim(),
-    dob: document.getElementById('inp-dob').value,
+    dob:  document.getElementById('inp-dob').value,
     date: document.getElementById('inp-date').value || new Date().toISOString().split('T')[0],
-    gp: document.getElementById('inp-gp').value.trim(),
-    nhs: document.getElementById('inp-nhs').value.trim()
+    gp:   document.getElementById('inp-gp').value.trim(),
+    nhs:  document.getElementById('inp-nhs').value.trim()
   };
   currentPage = 0;
   responses = {};
+  clearSaved();
   renderPage();
   show('form');
 }
 
-function catClass(cat) {
-  return { NE:'q-cat-NE', DA:'q-cat-DA', SE:'q-cat-SE', WB:'q-cat-WB', OV:'q-cat-OV' }[cat] || 'q-cat-OV';
-}
-function catLabel(cat) {
-  return { NE:'Norepinephrine', DA:'Dopamine', SE:'Serotonin', WB:'Wellbeing', OV:'Overlap' }[cat] || 'Overlap';
-}
-
+/* ── Render page ────────────────────────────────────────────────── */
 function renderPage() {
   const start = currentPage * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, QUESTIONS.length);
-  const qs = QUESTIONS.slice(start, end);
+  const end   = Math.min(start + PAGE_SIZE, QUESTIONS.length);
+  const qs    = QUESTIONS.slice(start, end);
   const answered = Object.keys(responses).length;
   const pct = Math.round((answered / QUESTIONS.length) * 100);
 
   document.getElementById('progress-label').textContent = `Questions ${start+1}–${end} of ${QUESTIONS.length}`;
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('btn-prev').disabled = currentPage === 0;
+  document.getElementById('progress-pct').textContent   = pct + '% complete';
+  document.getElementById('progress-fill').style.width  = pct + '%';
+  document.getElementById('btn-prev').style.visibility  = currentPage === 0 ? 'hidden' : 'visible';
+  document.getElementById('labels-toggle').checked = showLabels;
 
   const isLast = end >= QUESTIONS.length;
-  document.getElementById('btn-next').textContent = isLast ? 'See results →' : 'Next →';
-  document.getElementById('warn-msg').textContent = '';
+  document.getElementById('btn-next').textContent = isLast ? 'See results' : 'Continue →';
+  document.getElementById('warn-msg').classList.remove('visible');
 
+  const labels = ['Never','Rarely','Sometimes','Often','Always'];
   const list = document.getElementById('q-list');
   list.innerHTML = '';
-  const labels = ['Never','Rarely','Sometimes','Often','Always'];
+
   qs.forEach(q => {
-    const val = responses[q.id] || 0;
+    const meta = CAT_META[q.cat] || CAT_META.OV;
+    const val  = responses[q.id] || 0;
+
     let radios = '';
     for (let i = 1; i <= 5; i++) {
-      radios += `<label title="${labels[i-1]}"><input type="radio" name="q${q.id}" value="${i}" ${val===i?'checked':''} onchange="setResponse(${q.id},${i})"><span class="likert-dot">${i}</span></label>`;
+      const sel = val === i ? 'selected' : '';
+      radios += `<label class="${sel}" onclick="setResponse(${q.id}, ${i}, this)">
+        <input type="radio" name="q${q.id}" value="${i}" ${val===i?'checked':''}>
+        <span class="likert-inner">
+          <span class="likert-num">${i}</span>
+          <span class="likert-lbl">${labels[i-1]}</span>
+        </span>
+      </label>`;
     }
-    list.innerHTML += `<div class="q-row">
+
+    const tagHidden = showLabels ? '' : 'hidden';
+    list.innerHTML += `<div class="q-row" id="q-row-${q.id}">
       <span class="q-num">${q.id}</span>
-      <span class="q-text">${q.q}</span>
-      <span class="q-cat ${catClass(q.cat)}">${catLabel(q.cat)}</span>
-      <div class="likert">${radios}</div>
+      <div class="q-body">
+        <span class="q-unanswered-flag">• This question needs an answer</span>
+        <span class="q-cat-tag ${meta.cls} ${tagHidden}" style="background:${meta.bg};color:${meta.color}">${meta.label}</span>
+        <div class="q-text">${q.q}</div>
+        <div class="likert">${radios}</div>
+      </div>
     </div>`;
   });
 }
 
-function setResponse(qid, val) {
+/* ── Set response ───────────────────────────────────────────────── */
+function setResponse(qid, val, clickedLabel) {
   responses[qid] = val;
+  // Update visual selected state for this question's likert row
+  const row = clickedLabel.closest('.q-row');
+  row.querySelectorAll('.likert label').forEach(l => l.classList.remove('selected'));
+  clickedLabel.classList.add('selected');
+  // Clear unanswered highlight if present
+  row.classList.remove('q-row--unanswered');
+  // Update progress
   const pct = Math.round((Object.keys(responses).length / QUESTIONS.length) * 100);
-  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-pct').textContent  = pct + '% complete';
   document.getElementById('progress-fill').style.width = pct + '%';
+  saveProgress();
 }
 
+/* ── Navigate pages ─────────────────────────────────────────────── */
 function changePage(dir) {
   const start = currentPage * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, QUESTIONS.length);
+  const end   = Math.min(start + PAGE_SIZE, QUESTIONS.length);
+
   if (dir === 1) {
     const unanswered = QUESTIONS.slice(start, end).filter(q => !responses[q.id]);
     if (unanswered.length > 0) {
-      document.getElementById('warn-msg').textContent =
-        `Please answer all ${unanswered.length} remaining question${unanswered.length > 1 ? 's' : ''} on this page.`;
+      document.getElementById('warn-msg').classList.add('visible');
+      // Highlight all unanswered rows
+      QUESTIONS.slice(start, end).forEach(q => {
+        const row = document.getElementById(`q-row-${q.id}`);
+        if (!row) return;
+        if (!responses[q.id]) {
+          row.classList.add('q-row--unanswered');
+        } else {
+          row.classList.remove('q-row--unanswered');
+        }
+      });
+      // Scroll to first unanswered
+      const firstRow = document.getElementById(`q-row-${unanswered[0].id}`);
+      if (firstRow) firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (end >= QUESTIONS.length) { showResults(); return; }
   }
+
   currentPage += dir;
+  saveProgress();
   renderPage();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ── Results ────────────────────────────────────────────────────── */
 function showResults() {
-  const NE_MAX = 133.33;
-  const DA_MAX = 140.83;
-  const SE_MAX = 130.83;
-
+  const NE_MAX = 133.33, DA_MAX = 140.83, SE_MAX = 130.83;
   let ne = 0, da = 0, se = 0;
+
   QUESTIONS.forEach(q => {
     const raw = responses[q.id] || 3;
     const adj = q.rev ? (6 - raw) : raw;
@@ -530,33 +965,31 @@ function showResults() {
     se += adj * q.se;
   });
 
-  const nePct = Math.round((ne / NE_MAX) * 100);
-  const daPct = Math.round((da / DA_MAX) * 100);
-  const sePct = Math.round((se / SE_MAX) * 100);
+  const nePct = Math.min(100, Math.round((ne / NE_MAX) * 100));
+  const daPct = Math.min(100, Math.round((da / DA_MAX) * 100));
+  const sePct = Math.min(100, Math.round((se / SE_MAX) * 100));
 
   function interp(pct, name) {
-    if (pct >= 75) return `Your ${name} appears well-supported.`;
-    if (pct >= 60) return `Your ${name} is slightly reduced. Supportive lifestyle changes could help.`;
-    if (pct >= 45) return `Your ${name} is below optimal. Lifestyle changes and support may help.`;
-    return `Your ${name} is notably low. Consider speaking to a professional.`;
+    if (pct >= 75) return `Your ${name} score appears well-supported.`;
+    if (pct >= 60) return `Your ${name} score is slightly below average. Some lifestyle changes may help.`;
+    if (pct >= 45) return `Your ${name} score is below optimal. Supportive changes are worth considering.`;
+    return `Your ${name} score is notably low. Consider speaking to a healthcare professional.`;
   }
 
-  document.getElementById('ne-pct').textContent = nePct + '%';
-  document.getElementById('da-pct').textContent = daPct + '%';
-  document.getElementById('se-pct').textContent = sePct + '%';
-  document.getElementById('ne-bar').style.width = nePct + '%';
-  document.getElementById('da-bar').style.width = daPct + '%';
-  document.getElementById('se-bar').style.width = sePct + '%';
-  document.getElementById('ne-interp').textContent = interp(nePct, 'norepinephrine');
-  document.getElementById('da-interp').textContent = interp(daPct, 'dopamine');
-  document.getElementById('se-interp').textContent = interp(sePct, 'serotonin');
+  ['ne','da','se'].forEach((k, i) => {
+    const pct = [nePct, daPct, sePct][i];
+    const name = ['norepinephrine','dopamine','serotonin'][i];
+    document.getElementById(`${k}-pct`).textContent = pct + '%';
+    document.getElementById(`${k}-bar`).style.width = pct + '%';
+    document.getElementById(`${k}-interp`).textContent = interp(pct, name);
+  });
 
-  const r = Math.round((ne / NE_MAX) * 255);
-  const g = Math.round((da / DA_MAX) * 255);
-  const b = Math.round((se / SE_MAX) * 255);
-  const hex = '#' + [r,g,b].map(v => Math.min(255,Math.max(0,v)).toString(16).padStart(2,'0')).join('');
+  const r = Math.min(255, Math.round((ne / NE_MAX) * 255));
+  const g = Math.min(255, Math.round((da / DA_MAX) * 255));
+  const b = Math.min(255, Math.round((se / SE_MAX) * 255));
+  const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
   document.getElementById('swatch-box').style.background = hex;
-  document.getElementById('swatch-hex').textContent = hex.toUpperCase() + '  ·  RGB(' + r + ', ' + g + ', ' + b + ')';
+  document.getElementById('swatch-hex').textContent = hex.toUpperCase() + ' · RGB(' + r + ', ' + g + ', ' + b + ')';
 
   const adviceList = document.getElementById('advice-list');
   adviceList.innerHTML = '';
@@ -566,7 +999,10 @@ function showResults() {
     const trigger = q.wbRev ? raw >= 4 : raw <= 2;
     if (trigger) {
       anyAdv = true;
-      adviceList.innerHTML += `<div class="advice-item"><i class="ti ti-info-circle"></i><p>${q.wbAdv}</p></div>`;
+      adviceList.innerHTML += `<div class="advice-item">
+        <span class="advice-icon">ℹ</span>
+        <p>${q.wbAdv}</p>
+      </div>`;
     }
   });
   document.getElementById('advice-section').style.display = anyAdv ? 'block' : 'none';
@@ -574,18 +1010,28 @@ function showResults() {
   const metaParts = [];
   if (participantInfo.name) metaParts.push(participantInfo.name);
   if (participantInfo.date) metaParts.push(participantInfo.date);
-  document.getElementById('res-meta').textContent = metaParts.join(' · ') || 'Assessment complete';
+  document.getElementById('res-meta').textContent = metaParts.join(' · ') || '';
 
+  clearSaved();
   show('results');
 }
 
+/* ── Restart ────────────────────────────────────────────────────── */
 function restart() {
   responses = {};
   currentPage = 0;
+  participantInfo = {};
+  clearSaved();
   show('welcome');
 }
 
+/* ── Init ───────────────────────────────────────────────────────── */
 document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
+
+const saved = loadProgress();
+if (saved && Object.keys(saved.responses || {}).length > 0) {
+  document.getElementById('resume-banner').style.display = 'flex';
+}
 </script>
 </body>
 </html>
