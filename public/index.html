@@ -891,8 +891,9 @@ function showResults() {
     document.getElementById(`${k}-interp`).textContent = interp(pct, name);
   });
 
-  // Weighted circular-mean of each domain's brand hue, fixed saturation so the
-  // result is always vivid — avoids grey when scores are balanced.
+  // Weighted circular-mean hue from domain brand colours. Saturation is driven
+  // by the vector magnitude (0=balanced→muted, 1=dominant→vivid) so a balanced
+  // profile produces a soft pastel rather than a strong arbitrary colour.
   const neHue = 219, daHue = 148, seHue = 328;
   const wTotal = (nePct + daPct + sePct) || 1;
   const neW = nePct / wTotal, daW = daPct / wTotal, seW = sePct / wTotal;
@@ -901,6 +902,9 @@ function showResults() {
   const cy = neW*Math.sin(toRad(neHue)) + daW*Math.sin(toRad(daHue)) + seW*Math.sin(toRad(seHue));
   let hue = Math.atan2(cy, cx) * 180 / Math.PI;
   if (hue < 0) hue += 360;
+  // Saturation from score spread: balanced → muted (25%), dominant → vivid (80%).
+  const scoreSpread = Math.max(nePct, daPct, sePct) - Math.min(nePct, daPct, sePct);
+  const saturation = Math.round(Math.min(80, 25 + scoreSpread));
   const avgPct = (nePct + daPct + sePct) / 3;
   const lightness = Math.round(38 + (avgPct / 100) * 14);
   const hslToRgb = (h, s, l) => {
@@ -910,7 +914,7 @@ function showResults() {
     const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
     return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
   };
-  const [r, g, b] = hslToRgb(Math.round(hue), 65, lightness);
+  const [r, g, b] = hslToRgb(Math.round(hue), saturation, lightness);
   const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
   document.getElementById('swatch-box').style.background = hex;
   document.getElementById('swatch-hex').textContent = hex.toUpperCase() + ' · RGB(' + r + ', ' + g + ', ' + b + ')';
