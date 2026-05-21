@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Colour test</title>
+<style>
+  body { font-family: sans-serif; padding: 24px; background: #f0f4f5; }
+  .grid { display: flex; flex-wrap: wrap; gap: 16px; }
+  .swatch { width: 160px; padding: 12px; background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+  .box { width: 100%; height: 60px; border-radius: 4px; margin-bottom: 8px; }
+  .label { font-size: 12px; color: #425563; line-height: 1.5; }
+  .hex { font-size: 11px; font-family: monospace; font-weight: 700; }
+  .sat { font-size: 10px; color: #768692; }
+</style>
+</head>
+<body>
+<h2>Trichromind — spread-driven saturation</h2>
+<div class="grid" id="grid"></div>
+<script>
+function hslToRgb(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
+}
+
+function calcColour(nePct, daPct, sePct) {
+  const neHue = 219, daHue = 148, seHue = 328;
+  const wTotal = (nePct + daPct + sePct) || 1;
+  const neW = nePct/wTotal, daW = daPct/wTotal, seW = sePct/wTotal;
+  const toRad = h => h * Math.PI / 180;
+  const cx = neW*Math.cos(toRad(neHue)) + daW*Math.cos(toRad(daHue)) + seW*Math.cos(toRad(seHue));
+  const cy = neW*Math.sin(toRad(neHue)) + daW*Math.sin(toRad(daHue)) + seW*Math.sin(toRad(seHue));
+  let hue = Math.atan2(cy, cx) * 180 / Math.PI;
+  if (hue < 0) hue += 360;
+  const scoreSpread = Math.max(nePct, daPct, sePct) - Math.min(nePct, daPct, sePct);
+  const saturation = Math.round(Math.min(80, 25 + scoreSpread));
+  const avgPct = (nePct + daPct + sePct) / 3;
+  const lightness = Math.round(38 + (avgPct / 100) * 14);
+  const [r, g, b] = hslToRgb(Math.round(hue), saturation, lightness);
+  return { hex: '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join(''), saturation, lightness };
+}
+
+const cases = [
+  [80, 60, 60, 'NE dominant'],
+  [60, 80, 60, 'DA dominant'],
+  [60, 60, 80, 'SE dominant'],
+  [70, 70, 70, 'Balanced (high)'],
+  [50, 50, 50, 'Balanced (mid)'],
+  [30, 30, 30, 'Balanced (low)'],
+  [90, 40, 40, 'Strong NE'],
+  [40, 90, 40, 'Strong DA'],
+  [40, 40, 90, 'Strong SE'],
+  [80, 80, 40, 'NE+DA dominant'],
+  [80, 40, 80, 'NE+SE dominant'],
+  [40, 80, 80, 'DA+SE dominant'],
+];
+
+const grid = document.getElementById('grid');
+cases.forEach(([ne, da, se, label]) => {
+  const { hex, saturation, lightness } = calcColour(ne, da, se);
+  const div = document.createElement('div');
+  div.className = 'swatch';
+  div.innerHTML = `<div class="box" style="background:${hex}"></div>
+    <div class="hex">${hex.toUpperCase()}</div>
+    <div class="label">${label}<br>NE ${ne}% / DA ${da}% / SE ${se}%</div>
+    <div class="sat">S:${saturation}% L:${lightness}%</div>`;
+  grid.appendChild(div);
+});
+</script>
+</body>
+</html>
